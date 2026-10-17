@@ -29,9 +29,12 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\install.ps1
    powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\install.ps1
    ```
 
-安装会创建桌面快捷方式 **Codex Animation** 和 **Codex Image Settings**。项目文件夹需要保留；移动后请重新运行安装脚本。
+安装会在桌面创建两个快捷方式，都指向本仓库的 `CodexStartup.exe`：
 
-也可以直接双击仓库根目录的 `CodexStartup.exe` 启动。
+- **Codex Animation**：启动动画
+- **Codex Image Settings**：打开图片设置
+
+不要用官方 Codex 的开始菜单、任务栏或桌面图标。官方入口没有动画。项目文件夹需要保留；移动后请重新运行安装脚本。
 
 ## 使用
 
@@ -44,7 +47,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\install.ps1
 
 ## 常见问题
 
-**直接点官方图标没有动画：** 使用本项目的 **Codex Animation** 或 `CodexStartup.exe`。
+**直接点官方图标没有动画：** 官方快捷方式不能用来开启动画。请用桌面上的 **Codex Animation**，或双击本仓库的 `CodexStartup.exe`。没有这个快捷方式时，在仓库根目录运行 `install.ps1`，它会创建到桌面。
 
 **提示应用正在运行：** 从托盘完全退出 Codex 后，再用动画入口打开。
 
