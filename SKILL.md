@@ -4,8 +4,8 @@ description: >-
   Installs the Windows Codex startup animation from
   seetimee/codex-startup-animation-windows by git clone or GitHub ZIP, then
   tools/install-windows.ps1 or CodexStartup.exe. Use when the user asks to
-  install, set up, or update this Codex startup animation, 启动动画, Codex
-  Animation, or import the 4k红瞳少女动态壁纸 GIF background.
+  install, set up, or update this Codex startup animation, 启动动画, or Codex
+  Animation.
 ---
 
 # Codex Startup Animation for Windows
@@ -37,13 +37,3 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\install-windows.
 3. 换图片：桌面 **Codex Image Settings**，或主窗口 `Ctrl+Alt+B`。
 
 头像：PNG、JPEG、WebP。背景还可以是 GIF。单张不超过 80 MB。GIF 循环播放，线稿只用一帧。
-
-## 4k红瞳少女动态壁纸
-
-可选背景示例。用户自行从网盘保存后再导入。仓库不包含该文件。
-
-```
-https://www.alipan.com/s/dakiZZ9nPLq
-提取码: i0u9
-点击链接保存，或者复制本段内容，打开「阿里云盘」APP ，无需下载极速在线查看，视频原画倍速播放。
-```

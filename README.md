@@ -40,16 +40,6 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\install-windows.
 
 头像支持 PNG、JPEG、WebP；背景还可以使用 GIF，单张不超过 80 MB。GIF 保存后继续循环，线稿取其中一帧。设置保存在本机，不会上传。
 
-### 4k红瞳少女动态壁纸
-
-可选背景示例。从网盘保存到本机后，在图片设置里导入。仓库不包含该文件。
-
-```
-https://www.alipan.com/s/dakiZZ9nPLq
-提取码: i0u9
-点击链接保存，或者复制本段内容，打开「阿里云盘」APP ，无需下载极速在线查看，视频原画倍速播放。
-```
-
 ## 常见问题
 
 **直接点官方图标没有动画：** 使用本项目的 **Codex Animation** 或 `CodexStartup.exe`。
