@@ -31,7 +31,7 @@
         }
         previous=current;current=next;
       }
-      if(points.length>=8)paths.push(points.filter((_,i)=>i%2===0||i===points.length-1).map(([x,y])=>[Math.round(x*1920/width),Math.round(y*1080/height)]));
+      if(points.length>=8)paths.push(points.filter((_,i)=>i%2===0||i===points.length-1).map(([x,y])=>[Math.round(x*1536/width),Math.round(y*1024/height)]));
     }
     // Start at endpoints first, then trace the remaining closed loops.
     for(let i=0;i<count;i++)if(edge[i]&&!visited[i]&&neighbors.reduce((n,d)=>n+(edge[i+d]||0),0)<=1)walk(i);
@@ -41,7 +41,7 @@
   if(typeof module!=='undefined') {module.exports={vectorize};return;}
   async function database(action,value){
     return new Promise((resolve,reject)=>{
-      const open=indexedDB.open('aemeath-startup-images',1);
+      const open=indexedDB.open('codex-startup-windows-images',1);
       open.onupgradeneeded=()=>open.result.createObjectStore('settings');
       open.onerror=()=>reject(open.error);
       open.onsuccess=()=>{
@@ -53,23 +53,29 @@
     });
   }
   async function importImage(file,kind){
-    if(file.size>30*1024*1024)throw new Error('请选择小于 30 MB 的图片。');
-    if(!['image/png','image/jpeg','image/webp'].includes(file.type))throw new Error('请选择 PNG、JPEG 或 WebP 图片。');
+    // Raised from 30MB so Proteus-upscaled artwork GIFs (~40MB+) can import.
+    if(file.size>80*1024*1024)throw new Error('请选择小于 80 MB 的图片。');
+    const animated=kind==='artwork'&&file.type==='image/gif';
+    if(!animated&&!['image/png','image/jpeg','image/webp'].includes(file.type))throw new Error(kind==='artwork'?'请选择 PNG、JPEG、WebP 或 GIF 图片。':'请选择 PNG、JPEG 或 WebP 图片。');
     const url=URL.createObjectURL(file),img=new Image();
     try{
       img.src=url;await img.decode();
-      const canvas=document.createElement('canvas');canvas.width=kind==='avatar'?768:2304;canvas.height=kind==='avatar'?768:1296;
+      const canvas=document.createElement('canvas');canvas.width=kind==='avatar'?512:1536;canvas.height=kind==='avatar'?512:1024;
       const ctx=canvas.getContext('2d');ctx.fillStyle='#08060d';ctx.fillRect(0,0,canvas.width,canvas.height);
       const scale=Math.max(canvas.width/img.naturalWidth,canvas.height/img.naturalHeight);
       const w=img.naturalWidth*scale,h=img.naturalHeight*scale;
       ctx.drawImage(img,(canvas.width-w)/2,(canvas.height-h)/2,w,h);
       const image=canvas.toDataURL('image/png');
       if(kind==='avatar')return {avatar:image};
-      const small=document.createElement('canvas');small.width=960;small.height=540;
-      const smallCtx=small.getContext('2d',{willReadFrequently:true});smallCtx.drawImage(canvas,0,0,960,540);
-      const contours=vectorize(smallCtx.getImageData(0,0,960,540).data,960,540);
+      const small=document.createElement('canvas');small.width=768;small.height=512;
+      const smallCtx=small.getContext('2d',{willReadFrequently:true});smallCtx.drawImage(canvas,0,0,768,512);
+      const contours=vectorize(smallCtx.getImageData(0,0,768,512).data,768,512);
       if(!contours.length)throw new Error('图片轮廓太少，请选择边缘更清晰的背景。');
-      return {artwork:image,contours};
+      // Trace one frame, but keep the original GIF so its animation survives saving.
+      const artwork=animated?await new Promise((resolve,reject)=>{
+        const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=()=>reject(reader.error);reader.readAsDataURL(file);
+      }):image;
+      return {artwork,contours};
     }catch(error){throw new Error(error.message||'图片无法读取，请换一张图片。');}
     finally{URL.revokeObjectURL(url);}
   }

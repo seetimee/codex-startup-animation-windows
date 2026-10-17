@@ -1,9 +1,9 @@
 // Runtime-only appearance layer. No writes to the installed application.
 export function installRenderer(payload, mount) {
   if(window.top!==window)return {installed:false,reason:'child-frame'};
-  if(window.__aemeathExtension)return {installed:true,alreadyActive:true};
+  if(window.__aemeathExtension){if(payload.openSettings)window.__aemeathExtension.openSettings();return {installed:true,alreadyActive:true};}
   let frame=null,watchdog=0,observer=null,priorFocus=null,disposed=false;
-  let ready=false,completed=false,phase='loading',wallpaperURL=null,lastImage=null,metrics=null;
+  let ready=false,completed=false,phase='loading',wallpaperURL=null,lastImage=null,settingsRequested=false;
   const root=document.documentElement;
   const before=new Map(['--aemeath-wallpaper','--aemeath-wash'].map(key=>[key,[root.style.getPropertyValue(key),root.style.getPropertyPriority(key)]]));
   const originalAttribute=root.getAttribute('data-aemeath-skin');
@@ -22,7 +22,7 @@ export function installRenderer(payload, mount) {
     delete window.__aemeathExtension;
   }
   function background(data){
-    if(typeof data.image!=='string'||!/^data:image\/(png|jpeg|webp);base64,/.test(data.image))return;
+    if(typeof data.image!=='string'||!/^data:image\/(png|jpeg|webp|gif);base64,/.test(data.image))return;
     if(!style.isConnected)document.head.appendChild(style);
     const strength=Number.isFinite(data.strength)?Math.max(0,Math.min(75,data.strength)):42;
     // Large data URLs exceed CSS custom-property token limits in Chromium.
@@ -40,11 +40,12 @@ export function installRenderer(payload, mount) {
     root.toggleAttribute('data-aemeath-skin',strength>0);
   }
   function show(settings=false){
-    if(disposed||frame)return;
+    if(disposed)return;
+    if(frame){if(settings){settingsRequested=true;frame.contentWindow.AEMEATH_OPEN_SETTINGS=true;frame.contentWindow.launcherUI?.openSettings();}return;}
+    settingsRequested=settings;
     priorFocus=document.activeElement;phase=settings?'settings':'loading';
     frame=document.createElement('iframe');frame.id='aemeath-extension-overlay';frame.title='启动动画';
-    Object.assign(frame.style,{position:'fixed',inset:'0',width:'100%',height:'100%',border:'0',zIndex:'2147483646',background:'#08060d',colorScheme:'dark'});
-    frame.style.visibility=payload.deferStart&&!settings?'hidden':'visible';
+    Object.assign(frame.style,{position:'fixed',inset:'0',width:'100%',height:'100%',border:'0',zIndex:'2147483646',background:'transparent',colorScheme:'dark'});
     const current=frame;
     current.addEventListener('load',()=>{
       if(frame!==current||disposed)return;
@@ -53,8 +54,7 @@ export function installRenderer(payload, mount) {
         // No inline script, eval, network server, or CSP change is needed.
         doc.documentElement.innerHTML=payload.html;
         const css=doc.createElement('style');css.textContent=payload.css;doc.head.appendChild(css);
-        win.AEMEATH_EXTERNAL=true;win.AEMEATH_ASSETS=payload.assets;win.AEMEATH_OPEN_SETTINGS=settings;
-        win.AEMEATH_PREWARM=payload.deferStart&&!settings;
+        win.AEMEATH_EXTERNAL=true;win.AEMEATH_ASSETS=payload.assets;win.AEMEATH_OPEN_SETTINGS=settingsRequested;
         // The function is compiled in the parent realm. A closure-bound bridge
         // preserves frame identity without weakening postMessage source checks.
         win.AEMEATH_SEND=data=>message({source:win,data});
@@ -62,14 +62,14 @@ export function installRenderer(payload, mount) {
       }catch(error){phase='failed';console.error('Aemeath extension:',error.message);removeOverlay();}
     },{once:true});
     current.src='about:blank';document.body.appendChild(current);
-    watchdog=setTimeout(()=>{phase='timeout';removeOverlay();},payload.deferStart&&!settings?60000:25000);
+    watchdog=setTimeout(()=>{phase='timeout';removeOverlay();},25000);
   }
   function message(event){
     if(!frame||event.source!==frame.contentWindow||event.data?.type!=='aemeath-boot')return;
     const data=event.data;
     if(data.action==='background')background(data);
-    if(data.action==='ready'){ready=true;phase=payload.deferStart&&phase!=='settings'?'prepared':'playing';}
-    if(data.action==='complete'){metrics=data.metrics||null;completed=true;phase='complete';removeOverlay();}
+    if(data.action==='ready'){ready=true;phase='playing';}
+    if(data.action==='complete'){completed=true;phase='complete';removeOverlay();}
     if(data.action==='assetError'){phase='failed';removeOverlay();}
     if(data.action==='settings-open'){phase='settings';clearTimeout(watchdog);}
     if(data.action==='settings-close'){phase='playing';watchdog=setTimeout(removeOverlay,25000);}
@@ -79,20 +79,8 @@ export function installRenderer(payload, mount) {
     if((event.metaKey||event.ctrlKey)&&event.altKey&&event.code==='KeyB'){event.preventDefault();show(true);}
   }
   window.addEventListener('message',message);window.addEventListener('keydown',keyboard,true);
-  function settled(){return ready&&document.readyState==='complete';}
-  function start(){
-    if(!ready||!frame||phase!=='prepared')return false;
-    const begun=frame.contentWindow.launcherUI.beginLaunch(false);
-    if(!begun)return false;
-    completed=false;phase='playing';frame.style.visibility='visible';frame.focus();
-    clearTimeout(watchdog);watchdog=setTimeout(removeOverlay,25000);
-    return true;
-  }
-  async function startWhenSmooth(){
-    return start();
-  }
-  window.__aemeathExtension={dispose,start,startWhenSmooth,openSettings:()=>show(true),status:()=>({ready,completed,phase,settled:settled(),metrics,overlay:!!frame,wallpaper:root.hasAttribute('data-aemeath-skin'),imageBytes:root.style.getPropertyValue('--aemeath-wallpaper').length})};
-  if(document.body)show();
-  else{observer=new MutationObserver(()=>{if(document.body){observer.disconnect();observer=null;show();}});observer.observe(document,{childList:true,subtree:true});}
+  window.__aemeathExtension={dispose,openSettings:()=>show(true),status:()=>({ready,completed,phase,overlay:!!frame,wallpaper:root.hasAttribute('data-aemeath-skin'),imageBytes:root.style.getPropertyValue('--aemeath-wallpaper').length})};
+  if(document.body)show(Boolean(payload.openSettings));
+  else{observer=new MutationObserver(()=>{if(document.body){observer.disconnect();observer=null;show(Boolean(payload.openSettings));}});observer.observe(document,{childList:true,subtree:true});}
   return {installed:true};
 }

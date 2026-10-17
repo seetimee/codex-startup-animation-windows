@@ -2,27 +2,29 @@
 /* Keep the completed screen out of keyboard navigation during playback. */
 .end-screen{visibility:hidden}.finished .end-screen{visibility:visible}.scanlines{opacity:.022}
 /* Boot sequence: one shared clock drives every stage, including stroke drawing. */
-.scene{background:#08060d}.artwork{opacity:0;object-position:50% 50%;transform-origin:50% 50%}
-.line-art,.line-art-static{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none}
+.scene{background:#08060d;container-type:size}.artwork{opacity:0;object-position:50% 50%;transform-origin:50% 50%}
+/* Crop animated sources to the same 1536:1024 plane as their contour canvas. */
+.artwork-plane{position:absolute;left:50%;top:50%;width:max(100cqw,150cqh);height:max(100cqh,66.666667cqw);transform:translate(-50%,-50%);overflow:hidden}
+.line-art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none}
 .transition-flash{position:absolute;inset:0;background:#fff8fc;opacity:0;pointer-events:none}
-.intro{background:none;color:#d980a7;opacity:1}
+.intro{background:none;color:#b5ddf5;opacity:1}
 .pulse{position:absolute;left:50%;top:50%;width:110px;height:110px;transform:translate(-50%,-50%)}
-.pulse i{position:absolute;inset:0;border:2px solid #bd5d8980;border-radius:50%;box-shadow:0 0 6px #b8608920}
-.pulse b{position:absolute;left:50%;top:50%;width:8px;height:8px;transform:translate(-50%,-50%);border-radius:50%;background:#ee96bc;box-shadow:0 0 12px #ee79b288}
+.pulse i{position:absolute;inset:0;border:2px solid #a8d8f566;border-radius:50%;box-shadow:0 0 6px #a8d8f520}
+.pulse b{position:absolute;left:50%;top:50%;width:8px;height:8px;transform:translate(-50%,-50%);border-radius:50%;background:#b5ddf5;box-shadow:0 0 12px #a8d8f566}
 .identity{position:absolute;left:50%;top:50%;width:44%;transform:translate(-50%,-43%);text-align:center;opacity:0}
 .radar{position:relative;width:82%;aspect-ratio:1;margin:auto}
-.dial{position:absolute;inset:0;width:100%;height:100%;fill:none;stroke:#c27697;stroke-width:1;overflow:visible}
-.dial .dashed{stroke-dasharray:9 12;stroke:#8f819e;opacity:.4}.dial .ticks{stroke-width:1.6}.crosshair{stroke:#c5b2c4;opacity:.65}
-.avatar-frame{position:absolute;inset:21%;padding:8px;border:1px solid #cb7b9f;box-shadow:0 0 18px #f18ab514}
-.avatar-frame:before,.avatar-frame:after{content:"";position:absolute;inset:-4px;border:2px solid #d593b7;clip-path:polygon(0 0,14% 0,14% 1%,1% 1%,1% 14%,0 14%,0 0,100% 0,100% 14%,99% 14%,99% 1%,86% 1%,86% 0,100% 0,100% 100%,86% 100%,86% 99%,99% 99%,99% 86%,100% 86%,100% 100%,0 100%,0 86%,1% 86%,1% 99%,14% 99%,14% 100%,0 100%)}
-.avatar{display:block;width:100%;height:100%;object-fit:cover}
-.reticle{position:absolute;width:14%;height:6%;border:solid #817581;border-width:0;opacity:.7}.reticle.tl{left:-16%;top:17%;border-top-width:1px;border-left-width:1px}.reticle.tr{right:-16%;top:17%;border-top-width:1px;border-right-width:1px}.reticle.bl{left:-16%;bottom:3%;border-bottom-width:1px;border-left-width:1px}.reticle.br{right:-16%;bottom:3%;border-bottom-width:1px;border-right-width:1px}
-.wave{display:block;width:95%;height:22px;margin:12px auto -4px;fill:none;stroke:#d087a6;stroke-width:1.4;opacity:.7}
-.boot-title{font-family:"Songti SC","STSong",serif;font-size:clamp(25px,4.9vw,52px);font-weight:700;letter-spacing:.32em;padding-left:.32em;line-height:1.25;color:#d9d8e2;text-shadow:2px 0 #853d62,-2px 0 #8cc3cd}
-.boot-caption{font:7px Menlo,monospace;letter-spacing:6px;color:#74617b;opacity:.5;margin-top:12px;white-space:nowrap}
-.boot-grid{position:absolute;inset:20% 23% 18%;background-image:linear-gradient(#7560800c 1px,transparent 1px),linear-gradient(90deg,#7560800c 1px,transparent 1px);background-size:34px 34px;mask-image:radial-gradient(ellipse,black,transparent 72%);pointer-events:none}
-.boot-corners .corner{border-color:#9c456c;opacity:.65}.boot-logs{position:absolute;left:4%;bottom:6%;font:clamp(5px,.75vw,9px)/1.9 Menlo,monospace;letter-spacing:.45px;color:#968391;opacity:.55}.boot-logs div{opacity:0}
-.skip{opacity:.5;color:#968391;font:8px Menlo,monospace;letter-spacing:1.5px;bottom:5%;right:4%}.window:hover .skip{opacity:.85}
+.dial{position:absolute;inset:0;width:100%;height:100%;fill:none;stroke:#a8d8f5;stroke-width:1;overflow:visible}
+.dial .dashed{stroke-dasharray:9 12;stroke:#88a9c2;opacity:.4}.dial .ticks{stroke-width:1.6}.crosshair{stroke:#c5e3f5;opacity:.65}
+.avatar-frame{position:absolute;inset:21%;padding:8px;border:1px solid #a8d8f5;box-shadow:0 0 18px #a8d8f514}
+.avatar-frame:before,.avatar-frame:after{content:"";position:absolute;inset:-4px;border:2px solid #b5ddf5;clip-path:polygon(0 0,14% 0,14% 1%,1% 1%,1% 14%,0 14%,0 0,100% 0,100% 14%,99% 14%,99% 1%,86% 1%,86% 0,100% 0,100% 100%,86% 100%,86% 99%,99% 99%,99% 86%,100% 86%,100% 100%,0 100%,0 86%,1% 86%,1% 99%,14% 99%,14% 100%,0 100%)}
+.avatar{display:block;width:100%;height:100%;object-fit:cover;image-rendering:pixelated}
+.reticle{position:absolute;width:14%;height:6%;border:solid #809caf;border-width:0;opacity:.7}.reticle.tl{left:-16%;top:17%;border-top-width:1px;border-left-width:1px}.reticle.tr{right:-16%;top:17%;border-top-width:1px;border-right-width:1px}.reticle.bl{left:-16%;bottom:3%;border-bottom-width:1px;border-left-width:1px}.reticle.br{right:-16%;bottom:3%;border-bottom-width:1px;border-right-width:1px}
+.wave{display:block;width:95%;height:22px;margin:12px auto -4px;fill:none;stroke:#b5ddf5;stroke-width:1.4;opacity:.7}
+.boot-title{font-family:"Songti SC","STSong",serif;font-size:clamp(25px,4.9vw,52px);font-weight:700;letter-spacing:.32em;padding-left:.32em;line-height:1.25;color:#d9d8e2;text-shadow:2px 0 #6297b8,-2px 0 #b5ddf5}
+.boot-caption{font:7px Menlo,monospace;letter-spacing:6px;color:#7998ad;opacity:.5;margin-top:12px;white-space:nowrap}
+.boot-grid{position:absolute;inset:20% 23% 18%;background-image:linear-gradient(#91bfdc0c 1px,transparent 1px),linear-gradient(90deg,#91bfdc0c 1px,transparent 1px);background-size:34px 34px;mask-image:radial-gradient(ellipse,black,transparent 72%);pointer-events:none}
+.boot-corners .corner{border-color:#97c8e7;opacity:.65}.boot-logs{position:absolute;left:4%;bottom:6%;font:clamp(5px,.75vw,9px)/1.9 Menlo,monospace;letter-spacing:.45px;color:#96b5c9;opacity:.55}.boot-logs div{opacity:0}
+.skip{opacity:.5;color:#96b5c9;font:8px Menlo,monospace;letter-spacing:1.5px;bottom:5%;right:4%}.window:hover .skip{opacity:.85}
 @media(max-width:600px){.identity{width:53%}.boot-title{font-size:27px}.boot-caption{font-size:5px;letter-spacing:3px}.wave{margin-top:5px;height:12px}.avatar-frame{padding:4px}.boot-logs{font-size:5px}.skip{font-size:5px;letter-spacing:.5px}.pulse{width:70px;height:70px}}
 .hud,.shade{opacity:0}
 #image-settings{position:absolute;z-index:5;top:18px;right:23px;background:#100b1288;border:1px solid #a7839944;border-radius:5px;color:#c4a6b8;font-size:10px;padding:6px 10px;cursor:pointer}
@@ -45,20 +47,9 @@ body.embedded .end-screen,body.native.launch-mode.closing .end-screen{visibility
 #restore-appearance{margin-top:20px;width:100%;border:0;background:none;color:#ad95a7;font-size:11px;padding:8px}
 #restore-appearance[hidden]{display:none}
 .wallpaper-setting{display:grid;grid-template-columns:1fr auto;gap:10px;margin-top:20px;font-size:12px;color:#c7aebb}.wallpaper-setting input{grid-column:1/-1;width:100%;accent-color:#d7a4c0}.wallpaper-setting small{grid-column:1/-1;color:#a18a99;font-size:10px;line-height:1.6}.wallpaper-setting output{font:11px Menlo,monospace}
-body.webview-host .wallpaper-setting{display:none}
 .text-settings{display:grid;grid-template-columns:1fr 1fr;gap:14px 16px;margin-top:20px}.text-settings label{display:flex;flex-direction:column;gap:8px;min-width:0;font-size:12px;color:#c7aebb}.text-settings input{width:100%;min-width:0;padding:10px 11px;border:1px solid #63465c;border-radius:6px;background:#241b26;color:#f7eef2;font:inherit;font-size:13px}.text-settings small{font-size:10px;color:#a18a99}.text-wide{grid-column:1/-1}.boot-title{overflow-wrap:anywhere}.boot-title.long-title{font-size:clamp(18px,2.5vw,30px);letter-spacing:.12em;padding-left:.12em}.boot-caption{white-space:normal;overflow-wrap:anywhere;line-height:1.7}.subtitle{overflow-wrap:anywhere;line-height:1.5}
 @media(max-width:480px){.text-settings{grid-template-columns:1fr}#settings-dialog{padding:24px 18px}.settings-actions{gap:8px}.settings-actions button{padding:10px 8px}}
-body.launch-mode .end-screen{visibility:hidden}
-
-/* The final artwork and contour canvas share the same 16:9 geometry. */
-body:not(.native):not(.embedded) .window{aspect-ratio:16/9}
-.artwork{object-fit:cover;object-position:center;mask-image:none}
-.artwork-motion{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;opacity:0;pointer-events:none;will-change:transform,opacity}
-.hud{color:#173b52;text-shadow:0 1px 2px #ffffffc0,0 0 6px #ffffff80}
-.hud .corner{border-color:#356079}
-.hud .sync-track{border-color:#30586b;background:#e6f3f180}
-.hud .sync-fill{background:#345d74;box-shadow:0 0 8px #ffffffaa}
-.hud .sync-phase,.hud .coordinates{opacity:.78}
-.particle{background:#e8f9ff;box-shadow:0 0 10px #d8f5ff88}
-.line-art,.line-art-static{object-position:center}
-.subtitle[hidden]{display:none}
+/* Blue startup particle glow. */
+.particle{background:#b5ddf5;box-shadow:0 0 10px #a8d8f566}
+.pulse i{border-color:#a8d8f566;box-shadow:0 0 6px #a8d8f520}
+.pulse b{background:#b5ddf5;box-shadow:0 0 12px #a8d8f566}

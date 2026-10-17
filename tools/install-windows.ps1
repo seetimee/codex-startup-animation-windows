@@ -1,24 +1,25 @@
-#Requires -Version 5.1
+﻿#Requires -Version 5.1
 $ErrorActionPreference='Stop'
 $repo=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
-$package=Get-AppxPackage -Name OpenAI.Codex | Select-Object -First 1
-if(-not $package -or $package.SignatureKind -ne 'Store') {throw 'Install the official Microsoft Store Codex application first.'}
-$node=Join-Path $package.InstallLocation 'app\resources\cua_node\bin\node.exe'
-if(-not(Test-Path -LiteralPath $node)) {throw 'This Codex version does not include the required Node runtime.'}
-& (Join-Path $PSScriptRoot 'build-startup-gate.ps1')
+$package=Get-AppxPackage -Name OpenAI.Codex | Sort-Object Version -Descending | Select-Object -First 1
+if(-not $package -or $package.SignatureKind -ne 'Store') {throw '请先安装 Microsoft Store 版官方 Codex。'}
+$exe=Join-Path $repo 'CodexStartup.exe'
+if(-not(Test-Path -LiteralPath $exe)) {throw '仓库根目录缺少 CodexStartup.exe。'}
+$launch=Join-Path $repo 'windows\launch.ps1'
+if(-not(Test-Path -LiteralPath $launch)) {throw '仓库缺少 windows\launch.ps1。'}
+$icon=Join-Path $repo 'assets\windows-codex.ico'
 $desktop=[Environment]::GetFolderPath('Desktop')
 $shell=New-Object -ComObject WScript.Shell
-foreach($entry in @(@('Codex Animation','launch-hidden.vbs','launch.ico'),@('Codex Image Settings','settings-hidden.vbs','settings.ico'))) {
+foreach($entry in @(
+  @('Codex Animation',$exe,''),
+  @('Codex Image Settings',$exe,'--settings')
+)) {
   $shortcutPath=Join-Path $desktop ($entry[0]+'.lnk')
-  if(Test-Path -LiteralPath $shortcutPath) {
-    $existing=$shell.CreateShortcut($shortcutPath)
-    if($existing.Arguments -notlike ('*'+$repo+'*')) {throw ('Shortcut already exists for another installation: '+$shortcutPath)}
-  }
   $shortcut=$shell.CreateShortcut($shortcutPath)
-  $shortcut.TargetPath=Join-Path $env:WINDIR 'System32\wscript.exe'
-  $shortcut.Arguments='"'+(Join-Path $PSScriptRoot $entry[1])+'"'
+  $shortcut.TargetPath=$entry[1]
+  $shortcut.Arguments=$entry[2]
   $shortcut.WorkingDirectory=$repo
-  $shortcut.IconLocation=(Join-Path $repo ('assets\icons\'+$entry[2]))+',0'
+  if(Test-Path -LiteralPath $icon){$shortcut.IconLocation=$icon+',0'}
   $shortcut.Save()
 }
-Write-Output 'Installed. Fully exit Codex, then open the Codex Animation desktop shortcut.'
+Write-Output 'Installed. Fully exit Codex, then open the Codex Animation desktop shortcut or CodexStartup.exe.'
