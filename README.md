@@ -15,16 +15,18 @@
 ```powershell
 git clone https://github.com/seetimee/codex-startup-animation-windows.git
 cd codex-startup-animation-windows
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\install-windows.ps1
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\install.ps1
 ```
+
+先确认当前目录里能看到 `CodexStartup.exe`。如果提示 `install.ps1` 不存在，说明还在解压目录的上一层，需要再进入仓库文件夹。也可以直接双击仓库根目录的 `install.cmd`。
 
 **GitHub 压缩包**
 
 1. 打开仓库页面，点击 **Code → Download ZIP**，解压到一个固定目录。
-2. 在该目录打开 PowerShell，运行：
+2. 进入解压出来的、里面有 `CodexStartup.exe` 的那一层，打开 PowerShell，运行：
 
    ```powershell
-   powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\install-windows.ps1
+   powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\install.ps1
    ```
 
 安装会创建桌面快捷方式 **Codex Animation** 和 **Codex Image Settings**。项目文件夹需要保留；移动后请重新运行安装脚本。

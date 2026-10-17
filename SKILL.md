@@ -3,7 +3,7 @@ name: codex-startup-windows
 description: >-
   Installs the Windows Codex startup animation from
   seetimee/codex-startup-animation-windows by git clone or GitHub ZIP, then
-  tools/install-windows.ps1 or CodexStartup.exe. Use when the user asks to
+  install.ps1 or CodexStartup.exe. Use when the user asks to
   install, set up, or update this Codex startup animation, 启动动画, or Codex
   Animation.
 ---
@@ -23,10 +23,10 @@ Windows 10/11，Microsoft Store 版 `OpenAI.Codex`。先装官方应用。无需
 ```powershell
 git clone https://github.com/seetimee/codex-startup-animation-windows.git
 cd codex-startup-animation-windows
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\install-windows.ps1
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\install.ps1
 ```
 
-或者在 GitHub 页面选择 **Code → Download ZIP**，解压后在该目录运行同一条 `install-windows.ps1`。
+或者在 GitHub 页面选择 **Code → Download ZIP**。进入能看到 `CodexStartup.exe` 的那一层，再运行上面的 `install.ps1`，或双击 `install.cmd`。`-File` 报“不存在”时，是当前目录不对，不要在解压目录的上一层运行。
 
 安装会创建桌面快捷方式 **Codex Animation** 和 **Codex Image Settings**。也可以直接双击仓库根目录的 `CodexStartup.exe`。项目目录要留在原地；移动后重新运行安装脚本。
 
